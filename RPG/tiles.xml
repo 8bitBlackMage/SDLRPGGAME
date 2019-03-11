@@ -1,0 +1,22 @@
+
+
+<Document>
+<tile name = "TLGS" x ="0" y = "0" GID = "1"></tile>
+<tile name = "TRGS" x ="2" y = "0" GID = "2"></tile>
+<tile name = "YFlower" x ="3" y = "0"GID = "3"></tile>
+<tile name = "YFlowerAlt" x ="4" y = "0"GID = "4"></tile>
+<tile name = "RFlower" x ="5" y = "0"GID = "5"></tile>
+<tile name = "TLTree" x ="6" y = "0"GID = "6"></tile>
+<tile name = "TCTree" x ="7" y = "0"GID = "7"></tile>
+<tile name = "TRTree" x ="8" y = "0"GID = "8"></tile>
+<tile name = "RCGS" x ="0" y = "1" GID = "9"></tile>
+<tile name = "sandshrub" x ="1" y = "1" GID = "10"></tile>
+
+
+
+<tile name = "Grass" x ="4" y = "1"GID = ""></tile>
+<tile name = "Sand" x ="5" y = "2"GID = ""></tile>
+<tile name = "Water" x ="0" y = "12"GID = ""></tile>
+
+
+</Document>
