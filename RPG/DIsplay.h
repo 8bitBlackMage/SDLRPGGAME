@@ -54,6 +54,7 @@ struct SpriteSheets
 		SDL_FreeSurface(tmp);
 
 	}
+	SpriteSheets() {}
 	SDL_Texture* Texture;
 	TileMap Map;
 
@@ -119,6 +120,12 @@ public:
 	void drawTextures(int GID, SpriteSheets sheet, TileLayer * Layer, int x, int y)
 	{
 		SDL_RenderCopy(mRen, sheet.Texture, &sheet.Map.getTile(GID), &Layer->Tiles.at(x).at(y));
+	}
+	void drawMobTexture(int GID, SpriteSheets sheet, int x, int y)
+	{
+		SDL_Rect DestRect = {x,y,32,32};
+
+		SDL_RenderCopy(mRen, sheet.Texture, &sheet.Map.getTile(GID),&DestRect);
 	}
 	SDL_Renderer* getRender() {
 		return mRen;

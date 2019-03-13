@@ -4,10 +4,15 @@
 
 class Sprite {
 public:
-	Sprite(std::string imgPath, Display Graphics):Sheet(imgPath,Graphics.getRender())
+	Sprite(std::string imgPath, Display Graphics):Sheet(imgPath,Graphics.getRender()),mGraphics(&Graphics)
 	{
 	}
+	Sprite(bool test, Display Graphics):mGraphics(&Graphics)
+	{
+	
 
+
+	}
 	~Sprite(){}
 	virtual void update()
 	{
@@ -15,7 +20,7 @@ public:
 	}
 	void draw(Display *Graphics)
 	{
-//		Graphics->drawTextures();
+		
 	}
 
 private:
@@ -24,6 +29,7 @@ private:
 	};
 	SpriteSheets Sheet;
 	int x, y;
+	Display * mGraphics;
 };
 
 
