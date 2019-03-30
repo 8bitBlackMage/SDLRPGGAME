@@ -4,7 +4,7 @@
 namespace Globals {
 	const int Width = 640;
 	const int Height = 480;
-	const int TScale = 32;
+	const int TScale = 64;
 	const int FPS = 60;
 }
 struct vector2 {

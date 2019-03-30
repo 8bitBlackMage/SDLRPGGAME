@@ -123,7 +123,7 @@ public:
 	}
 	void drawMobTexture(int GID, SpriteSheets sheet, int x, int y)
 	{
-		SDL_Rect DestRect = {x,y,32,32};
+		SDL_Rect DestRect = {x,y,64,64};
 
 		SDL_RenderCopy(mRen, sheet.Texture, &sheet.Map.getTile(GID),&DestRect);
 	}
