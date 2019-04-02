@@ -16,11 +16,13 @@ int main(int argc, char* args[]) {
 	SpriteSheets overworld("TileSet.PNG",Graphics.getRender());
 	TileLayer Background(1920,1080);
 	Map test("maps/test.tmx","TileSet.png");
+	
 	while (true) {
 		Graphics.clear();
-		test.Draw(&Graphics, overworld);
+		test.Draw(&Graphics, &overworld);
 		Player.draw();
-		Player.update();
+
+		Player.update(&Loop.keycodes);
 
 		Graphics.flip();
 		Loop.Loop(&Graphics);

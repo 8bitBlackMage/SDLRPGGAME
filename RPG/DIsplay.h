@@ -117,9 +117,9 @@ public:
 	void flip() {
 		SDL_RenderPresent(mRen);
 	}
-	void drawTextures(int GID, SpriteSheets sheet, TileLayer * Layer, int x, int y)
+	void drawTextures(int GID, SpriteSheets *sheet, TileLayer * Layer, int x, int y)
 	{
-		SDL_RenderCopy(mRen, sheet.Texture, &sheet.Map.getTile(GID), &Layer->Tiles.at(x).at(y));
+		SDL_RenderCopy(mRen, sheet->Texture, &sheet->Map.getTile(GID), &Layer->Tiles.at(x).at(y));
 	}
 	void drawMobTexture(int GID, SpriteSheets sheet, int x, int y)
 	{

@@ -5,7 +5,10 @@
 #include "Tilemaps.h"
 class EventHandler {
 public:
-	EventHandler()/*:Graphics(1024,768)*/{};
+	EventHandler()/*:Graphics(1024,768)*/{
+		//keycodes.resize(SDL_scan);
+	}
+
 	void Loop(Display * Graphics) {
 		SDL_PollEvent(&Event);
 		switch (Event.type) {
@@ -14,6 +17,14 @@ public:
 			return;
 			break;
 			}
+		case(SDL_KEYDOWN): {
+			keycodes[Event.key.keysym.scancode] = true;
+		
+		}
+		case(SDL_KEYUP): {
+			keycodes[Event.key.keysym.scancode] = false;
+		}
+		
 		default:
 			break;
 
@@ -21,6 +32,9 @@ public:
 
 		}
 	}
+
+	std::map<SDL_Scancode,bool>keycodes;
+
 
 private:
 	SDL_Event Event;

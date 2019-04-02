@@ -37,7 +37,7 @@ public:
 		}
 	}
 
-	void Draw(Display * Graphics,SpriteSheets sheet) {
+	void Draw(Display * Graphics,SpriteSheets *sheet) {
 		
 		
 		for (int i = 0; i < Layers.size(); i++) {
