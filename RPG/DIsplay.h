@@ -1,5 +1,5 @@
 #pragma once
-#include "Gobals.h"
+#include "Globals.h"
 #include "SDL.h"
 #include "SDL_image.h"
 #include <iostream>
@@ -33,18 +33,13 @@ struct TileLayer
 	std::vector<std::vector<int>>GIDs;
 };
 
-struct Tile
-{
-	SDL_Rect IMGSRC;
-	int GID;
-	std::string name;
-
-};
-
 struct SpriteSheets
 {
 	SpriteSheets(std::string imgPath, SDL_Renderer*Ren)
 	{
+		load(imgPath, Ren);
+	}
+	void load(std::string imgPath, SDL_Renderer*Ren) {
 		SDL_Surface * tmp;
 
 		//loads bitmap file from 
@@ -65,16 +60,19 @@ struct SpriteSheets
 class Display
 {
 public:
-	Display(int ScreenWidth, int ScreenHeight) : mScreenWidth(ScreenWidth), mScreenHeight(ScreenHeight)
+	Display(int ScreenWidth, int ScreenHeight, int* scale) : mScreenWidth(ScreenWidth), mScreenHeight(ScreenHeight)
 	{
-		DisplayScale();
+		DisplayScale(mScreenWidth,mScreenHeight);
 		//standard constructor, initialises display, offscreen rendering
 		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 			std::cout << "error" << std::endl;
 		}
 		else {
 			mWin = SDL_CreateWindow("test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mScreenWidth, mScreenHeight, SDL_WINDOW_SHOWN);
-
+			ScrollboxW = mScreenWidth / 2;
+			ScrollBoxH = mScreenHeight / 2;
+			ScrollboxX = mScreenWidth - ScrollboxW;
+			ScrollboxY = mScreenHeight - ScrollboxY;
 			if (mWin == NULL) {
 
 				std::cout << "error" << std::endl;
@@ -119,11 +117,11 @@ public:
 	}
 	void drawTextures(int GID, SpriteSheets *sheet, TileLayer * Layer, int x, int y)
 	{
-		SDL_RenderCopy(mRen, sheet->Texture, &sheet->Map.getTile(GID), &Layer->Tiles.at(x).at(y));
+		SDL_RenderCopy(mRen, sheet->Texture, &sheet->Map.getTile(GID), &Layer->Tiles.at(y).at(x));
 	}
 	void drawMobTexture(int GID, SpriteSheets sheet, int x, int y)
 	{
-		SDL_Rect DestRect = {x,y,64,64};
+		SDL_Rect DestRect = {x,y,Globals::TScale,Globals::TScale };
 
 		SDL_RenderCopy(mRen, sheet.Texture, &sheet.Map.getTile(GID),&DestRect);
 	}
@@ -131,32 +129,23 @@ public:
 		return mRen;
 	}
 	int mScreenScale, mWideoffset;
+	int TileScale;
+	int ScrollboxX, ScrollboxY, ScrollBoxH,ScrollboxW;
+	int ScrollX;
+	int ScrollY;
+	int mScreenHeight, mScreenWidth;
 private:
-	void DisplayScale()
+	void DisplayScale(int w, int h)
 	{
-		if (mIsWidescreen= true)
-		{
-			int adjustedw = mScreenWidth / 1.333333333333333333333;
-			int TW = adjustedw /16;
-
-			mWideoffset = (mScreenWidth - adjustedw) / 2;
-			mScreenScale = TW;
-		}
-		else
-		{
-			int TW = mScreenWidth / 16;
-			mScreenScale = TW;
-		}
-
-
-
-
-
+		TileScale = h / 10;
 	}
+
+	
 
 	SDL_Window * mWin;
 	SDL_Renderer * mRen;
-	int mScreenHeight, mScreenWidth;
+	
+
 	bool mIsWidescreen;
 	
 };

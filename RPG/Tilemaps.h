@@ -1,14 +1,14 @@
 #pragma once
 #include "SDL.h"
 #include "TinyXML/tinyxml2.h"
-#include "Gobals.h"
+#include "Globals.h"
 #include <map>
 using namespace tinyxml2;
 class TileMap {
 public:
 	TileMap() {}
 	~TileMap() {}
-	void load(std::string path) {
+	void load(std::string path, int scale) {
 		int GID = 1;
 		XMLDocument Doc;
 		Doc.LoadFile(path.c_str());
@@ -28,10 +28,10 @@ public:
 					Tile->QueryIntAttribute("GID", &tmpGID);
 					Tile->QueryIntAttribute("x",&tmpRect.x);
 					Tile->QueryIntAttribute("y",&tmpRect.y);
-					tmpRect.w = Globals::TScale;
-					tmpRect.h = Globals::TScale;
-					tmpRect.x = tmpRect.x * Globals::TScale;
-					tmpRect.y = tmpRect.y * Globals::TScale;
+					tmpRect.w = scale;
+					tmpRect.h = scale;
+					tmpRect.x = tmpRect.x * scale;
+					tmpRect.y = tmpRect.y * scale;
 					m_Tiles.insert(std::pair<int, SDL_Rect>(GID, tmpRect));
 					GID++;
 					Tile = Tile->NextSiblingElement();
@@ -46,17 +46,19 @@ public:
 	}
 	void AutoLoad(SDL_Surface *spritesheet)
 	{
-		int sizeW = spritesheet->w / 32;
-		int sizeH = spritesheet->h / 32;
-		int GID = 1;
-		for (int y = 0; y < sizeH; y++) {
-			for (int x = 0; x < sizeW; x++) {
-				SDL_Rect tmpRect{x*32,y*32,32,32};
-				m_Tiles.emplace(std::pair<int, SDL_Rect>(GID, tmpRect));
-				GID++;
+		if (spritesheet != nullptr) {
+			int sizeW = spritesheet->w / 32;
+			int sizeH = spritesheet->h / 32;
+			int GID = 1;
+			for (int y = 0; y < sizeH; y++) {
+				for (int x = 0; x < sizeW; x++) {
+					SDL_Rect tmpRect{ x * 32,y * 32,32,32 };
+					m_Tiles.emplace(std::pair<int, SDL_Rect>(GID, tmpRect));
+					GID++;
+				}
 			}
-	}
-		m_numtiles = GID ;
+			m_numtiles = GID;
+		}
 	}
 	SDL_Rect getTile(int GID)
 	{
@@ -65,6 +67,10 @@ public:
 			if (GID < m_numtiles) {
 				return m_Tiles.at(GID);
 			}
+		}
+		if (GID == 0) {
+			SDL_Rect tile{};
+			return tile;
 		}
 	}
 private:

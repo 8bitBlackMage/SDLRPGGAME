@@ -2,10 +2,15 @@
 //defines consts for game 
 
 namespace Globals {
-	const int Width = 640;
-	const int Height = 480;
+	const int Width = 1024;
+	const int Height = 768;
 	const int TScale = 64;
 	const int FPS = 60;
+	const int tilesX = 10;
+	const int tilesY = 8;
+
+
+
 }
 struct vector2 {
 

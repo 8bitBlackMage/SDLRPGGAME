@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <object type="Door" width="31.2727" height="31.6364">
+  <properties>
+   <property name="DestY" type="int" value="0"/>
+   <property name="destX" type="int" value="0"/>
+   <property name="mapName" value=""/>
+  </properties>
+ </object>
+</template>

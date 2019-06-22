@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <object name="NPC" width="32" height="32">
+  <properties>
+   <property name="Name" value="test"/>
+   <property name="hasItem" type="bool" value="false"/>
+   <property name="spriteName" value="player"/>
+  </properties>
+ </object>
+</template>
