@@ -127,6 +127,7 @@
   <ItemGroup>
     <ClCompile Include="maincpp.cpp" />
     <ClCompile Include="Sprite.h" />
+    <ClCompile Include="Tileset.h" />
     <ClCompile Include="TinyXML\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -135,8 +136,10 @@
     <ClInclude Include="Gamehandler.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="Layers.h" />
     <ClInclude Include="Map.h" />
-    <ClInclude Include="Tilemaps.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Tilemap.h" />
     <ClInclude Include="TinyXML\tinyxml2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

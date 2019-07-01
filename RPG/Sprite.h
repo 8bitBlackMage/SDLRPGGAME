@@ -1,23 +1,22 @@
 #pragma once 
 #include "DIsplay.h"
 #include "Globals.h"
+#include "Layers.h"
 #include <array>
 #include <string>
 
 class Sprite {
 public:
 
-	Sprite(std::string imgPath, Display &Graphics):Sheet(imgPath,Graphics.getRender()),mGraphics(&Graphics)
+	Sprite(std::string imgPath, Display &Graphics):mGraphics(&Graphics)
 	{
 		x = 0;
 		y = 0;
+		location = new SDL_Rect{ x,y ,Globals::TScale,Globals::TScale };
 		mGid = 1;
 	}
 	~Sprite(){}
-	virtual void update()
-	{
 
-	}
 	void draw()
 	{
 		switch (facing) {
@@ -33,8 +32,10 @@ public:
 			break;
 		}
 		}
-		mGraphics->drawMobTexture(mGid, Sheet, x, y);
+		
+
 	}
+
 	enum SpriteDirection {
 		left, right, up, down, idle
 
@@ -46,50 +47,7 @@ protected:
 	
 private:
 	
-	SpriteSheets Sheet;
-	
+	image Spriteimage;
+	SDL_Rect * location;
 	Display * mGraphics;
 };
-
-
-//class Player : public Sprite {
-//public:
-//	Player(std::string imgPath, Display &Graphics):Sprite(imgPath, Graphics){
-//	}
-//	void update(std::array<bool, SDL_NUM_SCANCODES> * keycodes)
-//	{
-//
-//	move(keycodes);
-//	
-//
-//	}
-//	void move( std::array<bool, SDL_NUM_SCANCODES>  *keycodes)
-//	{
-//	if (keycodes->at(SDL_SCANCODE_LEFT) == true) {
-//		x -= Globals::TScale;
-//		facing = Sprite::left;
-//	}
-//	if (keycodes->at(SDL_SCANCODE_RIGHT) == true) {
-//		x += Globals::TScale;
-//		facing = Sprite::right;
-//	}
-//	if (keycodes->at(SDL_SCANCODE_UP) == true) {
-//		y -= Globals::TScale;
-//		facing = Sprite::up;
-//	}
-//	if (keycodes->at(SDL_SCANCODE_DOWN) == true) {
-//		y += Globals::TScale;
-//		facing = Sprite::down;
-//	}
-//	}
-//	void boundChecker() {
-//		if (x > Globals::Width) {
-//			std::cout << "LINE" << std::endl;
-//		}
-//	}
-//
-//
-//
-//private:
-//
-//};

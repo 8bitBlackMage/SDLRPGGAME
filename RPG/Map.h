@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Tilemaps.h"
+#include "Tileset.h"
+#include "Layers.h"
 #include "GameObject.h"
 #include "DIsplay.h"
 #include "SDL.h"
@@ -14,22 +15,76 @@ public:
 		Load(Mappath);
 	}
 
+	std::array<bool,4> getcollision(int x, int y)
+	{
+		int tileX = x / Globals::TScale;
+		int tileY = y/  Globals::TScale;
+		bool Left = false;
+		bool Right = false;
+		bool Up = false;
+		bool Down = false;
+		std::array<bool,4>Collision;
+			//left 
+		if (x <= 0) {
+			Left = true;
+		}
+		if (Left == false) {
+			Left = Layers[0].passable[tileX -1][tileY];
+		}
+		if (Left == false) {
+			Left = Layers[1].passable[tileX - 1][tileY];
+			}
+		Collision[0] = Left;
+			//right
+		if (Right == false) {
+			Right = Layers[0].passable[tileX + 1][tileY];
+		}
+		if (Right == false) {
+			Right = Layers[1].passable[tileX + 1][tileY];
+		}
+		Collision[1] = Right;
+			//up
+		if (y <= 0) {
+			Up = true;
+		}
+		if (Up == false) {
+			Up = Layers[0].passable[tileX][tileY - 1];
+		}
+		if (Up == false) {
+			Up = Layers[1].passable[tileX][tileY - 1];
+		}
+		Collision[2] = Up;
+			//down
+		if (Down == false) {
+			Down = Layers[0].passable[tileX][tileY +1];
+		}
+		if (Down == false) {
+			Down = Layers[1].passable[tileX][tileY + 1];
+		}
+		Collision[3] = Down;
+
+			return Collision;
+	}
+
+
+
+
 	void Load(std::string Mappath) {
 		int i = 0;
 		XMLDocument Doc;
-
-
 		//handles all the map tile data 
 		Doc.LoadFile(Mappath.c_str());
 		XMLElement* MapNode = Doc.FirstChildElement();
 		MapNode->QueryIntAttribute("width", &mWidth);
 		MapNode->QueryIntAttribute("height", &mHeight);
-
-
 		XMLElement * TilesetNode = MapNode->FirstChildElement("tileset");
 		const char * tilepath;
+		int offset;
 		TilesetNode->QueryStringAttribute("source", &tilepath);
-		loadTileset(tilepath);
+		TilesetNode->QueryIntAttribute("firstgid", &offset);
+		std::string Stilepath = tilepath;
+		Tileset FirstTileSet(Stilepath , offset, graphics);
+		Tilesets.push_back(FirstTileSet);
 		XMLElement* LayerNode = MapNode->FirstChildElement("layer");
 		if (LayerNode != NULL) {
 			while (LayerNode) {
@@ -47,6 +102,7 @@ public:
 				i++;
 			}
 		}
+		//generateCollisionmap();
 		XMLElement* ObjectGroupNode = MapNode->FirstChildElement("objectgroup");
 		if (ObjectGroupNode != NULL) {
 			printf("objects present \n");
@@ -75,36 +131,32 @@ public:
 		for (int i = 0; i < Layers.size(); i++) {
 			
 			
-			for (int y = 0; y < (graphics->mScreenHeight / Globals::TScale); y++) {
+			for (int y = 0; y < (graphics->M_ScreenHeight / Globals::TScale); y++) {
 				
-				for (int x = 0; x < (graphics->mScreenWidth / Globals::TScale); x++) {
-				//	SDL_RenderCopy(Graphics->getRender(), sheet->Texture, &tileAtlas.getTile(Layers[i].GIDs[x][y]), &Layers[i].Tiles[x][y]);
-				//	Graphics->drawTextures(Layers[i].GIDs[x][y], sheet, &Layers[i], x, y);
-					graphics->drawTextures(Layers[i].GIDs[y + graphics->ScrollY][x + graphics->ScrollX], &Tileset, &Layers[i], x, y);
-				//	printf("draw");
+				for (int x = 0; x < (graphics->M_ScreenWidth / Globals::TScale); x++) {
+		
+					Tilesets[0].drawTiles(Layers[i].GIDs[y + graphics->G_ScrollY][x + graphics->G_ScrollX], &Layers[i], x, y);
 				}
 			}
 	}
 	}
-	void MoveCamera() {
 
-	}
 	void handleObjects(std::vector<GameObject*> container) {
 		container = MapObjects;
 	}
 private:
-	TileMap tileAtlas;  
-	SpriteSheets  Tileset;
+//	SpriteSheets  Tileset;
 	std::vector<TileLayer>Layers;
+	std::vector<bool>tileCollision;
 	int mWidth, mHeight;
-	std::vector<std::vector<int>> CSV(const char * CSVData, int w, int h) {
-		std::vector<std::vector<int>> ret;
+	std::vector<std::vector<__int8>> CSV(const char * CSVData, int w, int h) {
+		std::vector<std::vector<__int8>> ret;
 		std::istringstream tmp(CSVData);
 		std::string line;
 		int i;
 		int x(0);
 		int y(0);
-		std::vector<int> vec;		
+		std::vector<__int8> vec;		
 		while (!tmp.eof()){
 			
 			while (getline(tmp, line)) {
@@ -129,25 +181,32 @@ private:
 		}
 		return ret;
 	}
+	void generateCollisionmap() {
+		for (int i = 0; i < Layers.size(); i++) {
+			Layers.at(i).passable.resize(mHeight);
+			for (int y = 0; y < mHeight; y++) {
+				Layers.at(i).passable.at(y).resize(mWidth);
+
+			}
+		}
+		for (int i = 0; i < Layers.size(); i++) {
+			std::cout << i << std::endl;
+			for (int y = 0; y < mHeight; y++) {
+
+				for (int x = 0; x < mWidth; x++) {
+					if (tileCollision.at(Layers.at(i).GIDs.at(y).at(x)) == true) {
+						Layers.at(i).passable.at(y).at(x) = true;
+					}
+					else {
+						Layers.at(i).passable.at(y).at(x) = false;
+					}
+				}
+			}
+		}
+	}
+	std::vector<Tileset>Tilesets;
 	std::vector<GameObject*>MapObjects;
 	Display * graphics;
-
-	void loadTileset(std::string TSXFILEPATH) {
-		//automatically loads the  image from the tileset file of the map file
-
-		std::string fullpath = "maps/" + TSXFILEPATH;
-		XMLDocument tileDoc;
-		
-		tileDoc.LoadFile(fullpath.c_str());
-		XMLElement * TilesetElement = tileDoc.FirstChildElement("tileset");
-		XMLElement * SourceElement = TilesetElement->FirstChildElement("image");
-		const char * CimgPath;
-		SourceElement->QueryStringAttribute("source", &CimgPath);
-
-		std::string imgPath = CimgPath;
-		imgPath.erase(0, 3);
-		Tileset.load(imgPath, graphics->getRender());
-	}
 
 	void prepareDoorObject(XMLElement * ObjectData) {
 		Door enterance;

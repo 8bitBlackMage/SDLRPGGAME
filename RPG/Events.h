@@ -2,28 +2,31 @@
 #include "SDL.h"
 #include "Display.h"
 #include <array>
-#include "Tilemaps.h"
+
+
+
+//overall SDL event handling, differs from game loop in so far as its called multiple times per frame, and handles OS functions such as keyboard reading 
 class EventHandler {
 public:
-	EventHandler()/*:Graphics(1024,768)*/{
-		for (int i = 0; i < SDL_NUM_SCANCODES; i++) {
-			
-	}
-	}
 
+	//default constructor, unused
+	EventHandler(){
+
+	}
+	//handles all SDL event functions
 	void Loop(Display * Graphics) {
-		SDL_PollEvent(&Event);
-		switch (Event.type) {
+		SDL_PollEvent(&M_Event);
+		switch (M_Event.type) {
 		case(SDL_QUIT): {
-			running = false;
+			M_running = false;
 			break;
 			}
 		case(SDL_KEYDOWN): {
-			keycodes[Event.key.keysym.scancode] = true;
+			G_keycodes[M_Event.key.keysym.scancode] = true;
 			break;
 		}
 		case(SDL_KEYUP): {
-			keycodes[Event.key.keysym.scancode] = false;
+			G_keycodes[M_Event.key.keysym.scancode] = false;
 			break;
 		}
 		
@@ -34,14 +37,19 @@ public:
 
 		}
 	}
+
+	//returns check to keep the main loop running (hopefully will be depreicated soon), 
 	bool isRunning() {
-		return running;
+		return M_running;
 	}
-	std::array<bool, SDL_NUM_SCANCODES>keycodes;
+	//array of per loop keypresses, read by other functions / objects needing to read the keyboard
+	std::array<bool, SDL_NUM_SCANCODES>G_keycodes;
 
 
 private:
-	SDL_Event Event;
-	//Display Graphics;
-	bool running = true;
+	//standard event type, will change per loop depending on whats hit 
+	SDL_Event M_Event;
+
+	//flag to keep execution continual, killing the SDL window thread triggers this to be false thus ending excecution
+	bool M_running = true;
 };
