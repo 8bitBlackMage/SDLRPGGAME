@@ -15,56 +15,56 @@ public:
 		Load(Mappath);
 	}
 
-	std::array<bool,4> getcollision(int x, int y)
-	{
-		int tileX = x / Globals::TScale;
-		int tileY = y/  Globals::TScale;
-		bool Left = false;
-		bool Right = false;
-		bool Up = false;
-		bool Down = false;
-		std::array<bool,4>Collision;
-			//left 
-		if (x <= 0) {
-			Left = true;
-		}
-		if (Left == false) {
-			Left = Layers[0].passable[tileX -1][tileY];
-		}
-		if (Left == false) {
-			Left = Layers[1].passable[tileX - 1][tileY];
-			}
-		Collision[0] = Left;
-			//right
-		if (Right == false) {
-			Right = Layers[0].passable[tileX + 1][tileY];
-		}
-		if (Right == false) {
-			Right = Layers[1].passable[tileX + 1][tileY];
-		}
-		Collision[1] = Right;
-			//up
-		if (y <= 0) {
-			Up = true;
-		}
-		if (Up == false) {
-			Up = Layers[0].passable[tileX][tileY - 1];
-		}
-		if (Up == false) {
-			Up = Layers[1].passable[tileX][tileY - 1];
-		}
-		Collision[2] = Up;
-			//down
-		if (Down == false) {
-			Down = Layers[0].passable[tileX][tileY +1];
-		}
-		if (Down == false) {
-			Down = Layers[1].passable[tileX][tileY + 1];
-		}
-		Collision[3] = Down;
+	//std::array<bool,4> getcollision(int x, int y)
+	//{
+	//	int tileX = x / Globals::TScale;
+	//	int tileY = y/  Globals::TScale;
+	//	bool Left = false;
+	//	bool Right = false;
+	//	bool Up = false;
+	//	bool Down = false;
+	//	std::array<bool,4>Collision;
+	//		//left 
+	//	if (x <= 0) {
+	//		Left = true;
+	//	}
+	//	if (Left == false) {
+	//		Left = Layers[0].passable[tileX -1][tileY];
+	//	}
+	//	if (Left == false) {
+	//		Left = Layers[1].passable[tileX - 1][tileY];
+	//		}
+	//	Collision[0] = Left;
+	//		//right
+	//	if (Right == false) {
+	//		Right = Layers[0].passable[tileX + 1][tileY];
+	//	}
+	//	if (Right == false) {
+	//		Right = Layers[1].passable[tileX + 1][tileY];
+	//	}
+	//	Collision[1] = Right;
+	//		//up
+	//	if (y <= 0) {
+	//		Up = true;
+	//	}
+	//	if (Up == false) {
+	//		Up = Layers[0].passable[tileX][tileY - 1];
+	//	}
+	//	if (Up == false) {
+	//		Up = Layers[1].passable[tileX][tileY - 1];
+	//	}
+	//	Collision[2] = Up;
+	//		//down
+	//	if (Down == false) {
+	//		Down = Layers[0].passable[tileX][tileY +1];
+	//	}
+	//	if (Down == false) {
+	//		Down = Layers[1].passable[tileX][tileY + 1];
+	//	}
+	//	Collision[3] = Down;
 
-			return Collision;
-	}
+	//		return Collision;
+	//}
 
 
 
@@ -83,25 +83,31 @@ public:
 		TilesetNode->QueryStringAttribute("source", &tilepath);
 		TilesetNode->QueryIntAttribute("firstgid", &offset);
 		std::string Stilepath = tilepath;
-		Tileset FirstTileSet(Stilepath , offset, graphics);
+		Tileset* FirstTileSet = new Tileset(Stilepath , offset, graphics);
 		Tilesets.push_back(FirstTileSet);
 		XMLElement* LayerNode = MapNode->FirstChildElement("layer");
 		if (LayerNode != NULL) {
 			while (LayerNode) {
 
 				Layers.resize(i);
-				TileLayer tmp{ mWidth,mHeight, };
-				tmp.layer = LayerNode->IntAttribute("id");
+				TileLayer tmp{ mWidth,mHeight,graphics};
+				tmp.M_layer = LayerNode->IntAttribute("id");
 				XMLElement* Data = LayerNode->FirstChildElement();
 				const char * tmpstring = Data->GetText();
 
 				
-				tmp.GIDs = CSV(tmpstring, mWidth,mHeight);
+				tmp.M_GIDs = CSV(tmpstring, mWidth,mHeight);
+				
 				Layers.push_back(tmp);
 				LayerNode = LayerNode->NextSiblingElement("layer");
 				i++;
 			}
 		}
+		for (int i = 0; i < Layers.size(); i++) {
+			Layers.at(i).getTilesets(Tilesets);
+		}
+
+
 		//generateCollisionmap();
 		XMLElement* ObjectGroupNode = MapNode->FirstChildElement("objectgroup");
 		if (ObjectGroupNode != NULL) {
@@ -122,30 +128,24 @@ public:
 				prepareNPCObject(Object);
 			}
 			}
-		printf("done");
 	}
 
-	void Draw() {
-		
-		
+	void AddToLayer(std::vector<layer*>*Buffer) {
 		for (int i = 0; i < Layers.size(); i++) {
+			Buffer->at(i) = (&Layers.at(i));
 			
-			
-			for (int y = 0; y < (graphics->M_ScreenHeight / Globals::TScale); y++) {
-				
-				for (int x = 0; x < (graphics->M_ScreenWidth / Globals::TScale); x++) {
+		}
 		
-					Tilesets[0].drawTiles(Layers[i].GIDs[y + graphics->G_ScrollY][x + graphics->G_ScrollX], &Layers[i], x, y);
-				}
-			}
-	}
+
 	}
 
 	void handleObjects(std::vector<GameObject*> container) {
-		container = MapObjects;
+		container = G_MapObjects;
 	}
+
+
 private:
-//	SpriteSheets  Tileset;
+
 	std::vector<TileLayer>Layers;
 	std::vector<bool>tileCollision;
 	int mWidth, mHeight;
@@ -181,33 +181,9 @@ private:
 		}
 		return ret;
 	}
-	void generateCollisionmap() {
-		for (int i = 0; i < Layers.size(); i++) {
-			Layers.at(i).passable.resize(mHeight);
-			for (int y = 0; y < mHeight; y++) {
-				Layers.at(i).passable.at(y).resize(mWidth);
-
-			}
-		}
-		for (int i = 0; i < Layers.size(); i++) {
-			std::cout << i << std::endl;
-			for (int y = 0; y < mHeight; y++) {
-
-				for (int x = 0; x < mWidth; x++) {
-					if (tileCollision.at(Layers.at(i).GIDs.at(y).at(x)) == true) {
-						Layers.at(i).passable.at(y).at(x) = true;
-					}
-					else {
-						Layers.at(i).passable.at(y).at(x) = false;
-					}
-				}
-			}
-		}
-	}
-	std::vector<Tileset>Tilesets;
-	std::vector<GameObject*>MapObjects;
+	std::vector<Tileset*>Tilesets;
+	std::vector<GameObject*>G_MapObjects;
 	Display * graphics;
-
 	void prepareDoorObject(XMLElement * ObjectData) {
 		Door enterance;
 		ObjectData->QueryIntAttribute("x", &enterance.x);
@@ -233,7 +209,7 @@ private:
 			ObjectProperties = ObjectProperties->NextSiblingElement("property");
 
 		}
-		MapObjects.push_back(new Door(enterance));
+		G_MapObjects.push_back(new Door(enterance));
 
 	}
 	void prepareNPCObject(XMLElement * ObjectData)
@@ -263,7 +239,7 @@ private:
 			ObjectProperties = ObjectProperties->NextSiblingElement("property");
 
 		}
-		MapObjects.push_back(new NPCObject(Character));
+		G_MapObjects.push_back(new NPCObject(Character));
 	}
 	
 };

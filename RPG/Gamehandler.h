@@ -4,6 +4,8 @@
 #include "GameObject.h"
 #include "Map.h"
 #include "Player.h"
+#include "Layers.h"
+#include "Tileset.h"
 
 
 //master game object, holds the global Loop and draw functions along with lists of maps, objects and layers
@@ -15,10 +17,14 @@ public:
 	//constructor filled with test code atm
 	GameEvents(Player * mainPlayer, Display *Graphics)
 	{
-		m_MainPlayer = mainPlayer;
-		m_MainPlayer->x = 256;
-		m_MainPlayer->y = 256;
-		m_graphics = Graphics;
+		M_MainPlayer = mainPlayer;
+		M_MainPlayer->x = 256;
+		M_MainPlayer->y = 256;
+		M_graphics = Graphics;
+		M_Vbuffer.push_back(new TileLayer());
+		M_Vbuffer.push_back(new TileLayer());
+		M_Vbuffer.push_back(new SpriteLayer());
+		M_Vbuffer.push_back(new collisionLayer());
 	}
 
 
@@ -27,48 +33,57 @@ public:
 	{
 	std::string path = "maps/" + MapName + ".tmx";
 	
-	maps.push_back(new Map(path,m_graphics));
-	maps[0]->handleObjects(MapObjects);
-	m_MainPlayer->getMap(maps[0]);
+	M_maps.push_back(new Map(path,M_graphics));
+	M_maps[0]->handleObjects(G_MapObjects);
+	M_maps[0]->AddToLayer(&M_Vbuffer);
+
+	M_MainPlayer->getMap(M_maps[0]);
 	}
 
 	//master Draw function will hold layer drawing code in future versions 
 	void LoopDraw()
 	{
-		maps[0]->Draw();
-		m_MainPlayer->draw(m_graphics);
-		for (int i = 0; i < Objects; i++)
+		SpriteLayer  tmp = {M_graphics};
+		
+		M_MainPlayer->AddToLayer(&tmp);
+		M_Vbuffer.at(2) = &tmp;
+		for (int i = 0; i < M_Objects; i++)
 		{
-			MapObjects[i]->draw(m_graphics);
+		//	MapObjects[i]->AddToLayer(m_graphics);
 
+		}
+		for (int i = 0; i < M_Vbuffer.size(); i++) {
+			M_Vbuffer[i]->draw();
 		}
 	}
 	void GameLoop(std::array<bool, SDL_NUM_SCANCODES>*Input)
 	{
 		LoopDraw();
-		if (counter == 6) {
-			m_MainPlayer->passScanCodes(Input);
-			m_MainPlayer->update();
-			for (int i = 0; i < Objects; i++)
+		if (M_counter == 6) {
+			M_MainPlayer->passScanCodes(Input);
+			M_MainPlayer->update();
+			for (int i = 0; i < M_Objects; i++)
 			{
-				MapObjects[i]->update();
+				G_MapObjects[i]->update();
 			}
-			counter = 0;
+			M_counter = 0;
 		}
-		counter++;
+		M_counter++;
 	}
 
 
 
 
 
-	std::vector<GameObject*>MapObjects;
+	std::vector<GameObject*>G_MapObjects;
 
 private:
-	Display * m_graphics;
-	std::vector<Map*>maps;
+	std::vector<layer*>M_Vbuffer;
+
+	Display * M_graphics;
+	std::vector<Map*>M_maps;
 	
-	Player* m_MainPlayer;
-	int Objects;
-	__int8 counter = 0; 
+	Player* M_MainPlayer;
+	int M_Objects;
+	__int8 M_counter = 0; 
 };

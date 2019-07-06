@@ -30,10 +30,6 @@ struct SpriteSheets
 
 };
 
-
-
-
-
 //overall class to store  display code, holds all base code to rendering to the screen 
 class Display
 {
@@ -41,7 +37,7 @@ public:
 	//standard constructor, initialises display, offscreen rendering
 	Display(int ScreenWidth, int ScreenHeight, int* scale) : M_ScreenWidth(ScreenWidth), M_ScreenHeight(ScreenHeight)
 	{
-		DisplayScale(M_ScreenWidth,M_ScreenHeight);
+		
 		
 		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 			std::cout << "error" << std::endl;
@@ -140,11 +136,43 @@ private:
 	
 };
 
-
+//coverall class for image files and data for said images 
 struct image {
+
+	
+	//pointer to VRAM holding image data 
 	SDL_Texture* M_Texture;
-	void load(std::string imgPath, Display * graphics) {
-	M_Texture = graphics->LoadMedia(imgPath);
+
+
+	//vector to hold info for different frames of image, for tilesets / animated sprites 
+	std::vector<SDL_Rect>M_sheetparts;
+
+
+	//small int to store current rect being used for rendering 
+	__int8 M_currentSheetPart;
+
+
+	//function to load png file into VRAM 
+	void load(std::string imgPath, Display * graphics) 
+	{
+		M_Texture = graphics->LoadMedia(imgPath);
+	}
+
+	void HandleImageset()
+	{
+		int sizeW;
+		int sizeH;
+		SDL_QueryTexture(M_Texture, NULL, 0, &sizeW, &sizeH);
+		sizeW /= 32;
+		sizeH /= 32;
+		for (int y = 0; y < sizeH; y++) {
+			for (int x = 0; x < sizeW; x++) {
+				SDL_Rect tmpRect{ x * 32,y * 32,32,32 };
+				M_sheetparts.push_back(tmpRect);
+
+			}
+
+		}
 
 	}
 };

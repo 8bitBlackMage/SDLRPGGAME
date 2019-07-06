@@ -1,5 +1,6 @@
+#pragma once
 #include "Display.h"
-#include "Layers.h"
+
 #include <vector>
 #include "TinyXML/tinyxml2.h"
 
@@ -37,7 +38,7 @@ void loadTileset(std::string TSXFILEPATH) {
 	imgPath.erase(0, 3);
 	Imgload(imgPath);
 	XMLElement * TileElement = TilesetElement->FirstChildElement("tile");
-	tileDoc.Clear();
+	int i = 0;
 	if (TileElement != NULL) {
 		while (TileElement) {
 			XMLElement *propertyElement = TileElement->FirstChildElement("properties")->FirstChildElement("property");;
@@ -47,17 +48,20 @@ void loadTileset(std::string TSXFILEPATH) {
 			propertyElement->QueryStringAttribute("name", &name);
 			std::string workName = name;
 
-			if (workName == "Solid") {
-				bool Solid;
-				propertyElement->QueryBoolAttribute("value", &Solid);
+			if (workName == "passable") {
 				
+				bool passable;
+				propertyElement->QueryBoolAttribute("value", &passable);
+				M_Passabe.push_back(passable);
+				std::cout << i << std::endl;
+				i++;
 			}
 
 			TileElement = TileElement->NextSiblingElement();
 
 		}
 	}
-
+	tileDoc.Clear();
 }
 
 
@@ -86,6 +90,14 @@ void setLocalOffset(int FirstTileoffset) {
 }
 
 
+bool getPassible(int GlobalID) {
+	if (GlobalID == 0) {
+		return true;
+	}
+	return M_Passabe.at(GlobalID - mGlobalOffset);
+}
+
+
 SDL_Texture * getImage() {
 	return mTilesetImage.M_Texture;
 }
@@ -97,9 +109,7 @@ SDL_Rect getSrcRect(int GlobalID) {
 	return mTiles.at(GlobalID - mGlobalOffset);
 }
 
-void drawTiles(int ID, TileLayer * Layer, int x, int y) {
-	SDL_RenderCopy(mgraphics->getRender(), mTilesetImage.M_Texture, &getSrcRect(ID), &Layer->Tiles.at(y).at(x));
-}
+
 
 
 
@@ -110,6 +120,8 @@ private:
 	image mTilesetImage;
 	//holds the info of each tile
 	std::vector<SDL_Rect>mTiles;
+	//holds data to see if sprites can pass through it
+	std::vector<bool>M_Passabe;
 	//pointer to graphics stack to handle rendering and optimisations 
 	Display * mgraphics;
 };

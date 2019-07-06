@@ -57,7 +57,7 @@ public:
 		}
 		
 	}
-	void draw(Display * Graphics) override
+	void AddToLayer(SpriteLayer * layer) override
 	{
 
 			//smooth moving
@@ -83,7 +83,7 @@ public:
 			}
 
 		
-			OverWorldImage->draw(&LayerToDraw);
+			OverWorldImage->addtolayer(layer);
 	}
 	void Scrolling() {
 		if (x == graphics->G_FScrollX && (graphics->G_FScrollX / Globals::TScale) < (graphics->mapSizeX - graphics->G_ScrollXoffset)) {

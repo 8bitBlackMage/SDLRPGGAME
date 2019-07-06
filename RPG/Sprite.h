@@ -10,6 +10,8 @@ public:
 
 	Sprite(std::string imgPath, Display &Graphics):mGraphics(&Graphics)
 	{
+		Spriteimage.load(imgPath, mGraphics);
+		Spriteimage.HandleImageset();
 		x = 0;
 		y = 0;
 		location = new SDL_Rect{ x,y ,Globals::TScale,Globals::TScale };
@@ -17,8 +19,11 @@ public:
 	}
 	~Sprite(){}
 
-	void draw()
+	void addtolayer(SpriteLayer * layer)
 	{
+		location->x = x;
+		location->y = y;
+		std::cout << x << " " << y << std::endl;
 		switch (facing) {
 
 		case(left): {mGid = 4;
@@ -32,8 +37,10 @@ public:
 			break;
 		}
 		}
-		
-
+		Spriteimage.M_currentSheetPart = mGid;
+		layer->Spriteimages.push_back(&Spriteimage);
+		layer->Sprites.push_back(*location);
+		layer->spritecount++;
 	}
 
 	enum SpriteDirection {

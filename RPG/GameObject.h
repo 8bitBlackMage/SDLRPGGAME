@@ -8,7 +8,7 @@ public:
 	virtual void init(Display* graph) = 0;
 	virtual void update() = 0;
 	virtual void onCollide() = 0;
-	virtual void draw(Display * Graphics) = 0;
+	virtual void AddToLayer(SpriteLayer * layer) = 0;
 	void imageload() {
 		OverWorldImage = new Sprite(ImgPath ,*graphics);
 	}
@@ -48,7 +48,7 @@ public:
 	{
 
 	}
-	void draw(Display * Graphics) override
+	void AddToLayer(SpriteLayer * layer) override
 	{
 
 	}
@@ -82,7 +82,7 @@ public:
 
 	}
 
-	void draw(Display * Graphics) override {
+	void AddToLayer(SpriteLayer * layer) override {
 	
 	}
 	int destX;
