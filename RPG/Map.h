@@ -139,16 +139,18 @@ public:
 
 	}
 
-	void handleObjects(std::vector<GameObject*> container) {
-		container = G_MapObjects;
+	void handleObjects(std::vector<GameObject*>* container) {
+		for (int i = 0; i < G_MapObjects.size(); i++) {
+			container->push_back(G_MapObjects.at(i));
+		}
 	}
-
-
-private:
-
-	std::vector<TileLayer>Layers;
-	std::vector<bool>tileCollision;
 	int mWidth, mHeight;
+	std::vector<TileLayer>Layers;
+private:
+	
+	
+	std::vector<bool>tileCollision;
+	
 	std::vector<std::vector<__int8>> CSV(const char * CSVData, int w, int h) {
 		std::vector<std::vector<__int8>> ret;
 		std::istringstream tmp(CSVData);

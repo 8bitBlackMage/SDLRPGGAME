@@ -53,7 +53,6 @@ void loadTileset(std::string TSXFILEPATH) {
 				bool passable;
 				propertyElement->QueryBoolAttribute("value", &passable);
 				M_Passabe.push_back(passable);
-				std::cout << i << std::endl;
 				i++;
 			}
 

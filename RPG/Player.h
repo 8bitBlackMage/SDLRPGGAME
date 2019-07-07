@@ -20,37 +20,38 @@ public:
 		if (OverWorldImage->x == RelativeX && OverWorldImage->y == RelativeY) {
 			move();
 		//	Collisions = mMap->getcollision(x,y);
-			std::cout << x << " " << y << std::endl;
+		
 		}
 		Scrolling();  
 	
 	}
 	void move() override
 	{
-		if (m_keycodes->at(SDL_SCANCODE_LEFT) == true)
+		std::cout << CollsionData.left << " " << CollsionData.right << " " << CollsionData.top << " " << CollsionData.bottom << std::endl;
+ 		if (m_keycodes->at(SDL_SCANCODE_LEFT) == true)
 		{
-			if(Collisions[0] == false)
+		//	if(CollsionData.left == false)
 				x -= Globals::TScale;
 				OverWorldImage->facing = Sprite::left;
 			
 
 		}
 		if (m_keycodes->at(SDL_SCANCODE_RIGHT) == true) {
-			if(Collisions[1] == false)
+		//	if(CollsionData.right == false)
 				x += Globals::TScale;
 				OverWorldImage->facing = Sprite::right;
 			
 		}
 		if (m_keycodes->at(SDL_SCANCODE_UP) == true)
 		{
-			if(Collisions[2] == false)
+		//	if(CollsionData.top == false)
 				y -= Globals::TScale;
 				OverWorldImage->facing = Sprite::up;
 			
 		}
 		if (m_keycodes->at(SDL_SCANCODE_DOWN) == true)
 		{
-			if(Collisions[3] == false)
+		//	if(CollsionData.bottom == false)
 				y += Globals::TScale;
 				OverWorldImage->facing = Sprite::down;
 			
@@ -90,7 +91,6 @@ public:
 			graphics->G_ScrollX++;
 			graphics->G_FScrollX += Globals::TScale;
 			graphics->G_BScrollX += Globals::TScale;
-			std::cout << (graphics->G_FScrollX / 64 )<< std::endl << graphics->G_BScrollX / 64 << std::endl;
 			
 		}
 		if (x == (graphics->G_BScrollX ) && graphics->G_ScrollX != 0) {

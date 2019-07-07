@@ -16,6 +16,7 @@ public:
 	int y;
 	int w;
 	int h;
+	CollisionBool CollsionData;
 	Display * graphics;
 	Sprite * OverWorldImage;
 	std::string ImgPath;
@@ -71,7 +72,7 @@ public:
 
 	}
 	void init(Display* graph) override 	{
-
+		OverWorldImage = new Sprite(*graph);
 	}
 	//handles all enterences and exits, transistions between maps 
 	void update() override {
