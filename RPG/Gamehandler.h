@@ -30,13 +30,15 @@ public:
 	{
 		M_Vbuffer.clear();
 		M_maps.clear();
+		M_graphics = nullptr;
+		M_MainPlayer = nullptr;
 	}
 
 	//loads new map into the vector of maps, handles the path generation and object processing 
 	void loadNewMap(std::string MapName)
 	{
-	std::string path = "maps/" + MapName + ".tmx";
-	
+	std::string path = "Maps/" + MapName + ".tmx";
+	std::cout << path << std::endl;
 	M_maps.push_back(new Map(path,M_graphics));
 	G_MapObjects.push_back(M_MainPlayer);
 	M_maps[0]->handleObjects(&G_MapObjects);

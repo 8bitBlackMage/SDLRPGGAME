@@ -5,6 +5,10 @@ class GameObject {
 	// master gameobject, all others inheret from this 
 public:
 	GameObject(){}
+	~GameObject(){
+		graphics = nullptr;
+		OverWorldImage = nullptr;
+	}
 	virtual void init(Display* graph) = 0;
 	virtual void update() = 0;
 	virtual void onCollide() = 0;

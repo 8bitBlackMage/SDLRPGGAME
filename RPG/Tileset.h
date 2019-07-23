@@ -25,10 +25,12 @@ void Imgload(std::string imgpath) {
 //master function called from Map file, handles the TMX files's XML headers and extracts the relevant infomation, to pass on to the rest of the functions
 void loadTileset(std::string TSXFILEPATH) {
 	
-	std::string fullpath = "maps/" + TSXFILEPATH;
+	std::string fullpath = "Maps/" + TSXFILEPATH;
+	std::cout << fullpath << std::endl;
 	XMLDocument tileDoc;
 
 	tileDoc.LoadFile(fullpath.c_str());
+	std::cout << tileDoc.ErrorStr() << std::endl;
 	XMLElement * TilesetElement = tileDoc.FirstChildElement("tileset");
 	XMLElement * SourceElement = TilesetElement->FirstChildElement("image");
 	const char * CimgPath;
@@ -102,8 +104,8 @@ SDL_Texture * getImage() {
 }
 SDL_Rect getSrcRect(int GlobalID) {
 	if (GlobalID == 0) {
-		SDL_Rect tile{};
-		return tile;
+		SDL_Rect* tile = new SDL_Rect{};
+		return *tile;
 	}
 	return mTiles.at(GlobalID - mGlobalOffset);
 }

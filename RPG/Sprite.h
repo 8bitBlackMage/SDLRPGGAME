@@ -102,7 +102,7 @@ public:
 			layer->ActualLocations.at(SpriteID) = *location;
 
 		}
-		std::cout << Moving << std::endl;
+
 
 
 

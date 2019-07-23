@@ -56,13 +56,15 @@ public:
 	
 	void draw() override
 	{
+		if(M_GIDs.size() > 0){
 		for (int y = 0; y < (M_graphics->M_ScreenHeight / Globals::TScale); y++) {
 
 			for (int x = 0; x < (M_graphics->M_ScreenWidth / Globals::TScale); x++) {
-
-				SDL_RenderCopy(M_graphics->getRender(), M_Tilesets[0]->getImage(), &M_Tilesets[0]->getSrcRect(M_GIDs[y + M_graphics->G_ScrollY][x + M_graphics->G_ScrollX]), &M_Tiles.at(y).at(x));
+				SDL_Rect srcRect = M_Tilesets[0]->getSrcRect(M_GIDs[y + M_graphics->G_ScrollY][x + M_graphics->G_ScrollX]);
+				SDL_RenderCopy(M_graphics->getRender(), M_Tilesets[0]->getImage(), &srcRect, &M_Tiles.at(y).at(x));
 				
 			}
+		}
 		}
 	}
 	void update() override {

@@ -17,7 +17,7 @@ public:
 	}
 	void update() override
 	{
-		std::cout << OverWorldImage->Moving << std::endl;
+		
 		if (OverWorldImage->Moving == false) {
 			move();
 		
@@ -27,7 +27,7 @@ public:
 	}
 	void move() override
 	{
-		std::cout << CollsionData.left << " " << CollsionData.right << " " << CollsionData.top << " " << CollsionData.bottom << std::endl;
+		
  		if (m_keycodes->at(SDL_SCANCODE_LEFT) == true)
 		{
 			if(CollsionData.left == false)

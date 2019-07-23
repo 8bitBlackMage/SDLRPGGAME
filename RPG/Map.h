@@ -23,8 +23,17 @@ public:
 		int i = 0;
 		XMLDocument Doc;
 		//handles all the map tile data 
-		Doc.LoadFile(Mappath.c_str());
+
+		int ret = Doc.LoadFile(Mappath.c_str());
+		if(ret != 0){
+			
+			std::cout << "error " << Doc.ErrorStr() <<std::endl;
+			abort();
+		}
+		if(ret == 0 ){
+		std::cout << ret << std::endl;
 		XMLElement* MapNode = Doc.FirstChildElement();
+		if(MapNode != NULL){
 		MapNode->QueryIntAttribute("width", &mWidth);
 		MapNode->QueryIntAttribute("height", &mHeight);
 		XMLElement * TilesetNode = MapNode->FirstChildElement("tileset");
@@ -76,7 +85,8 @@ public:
 			}
 			}
 		Doc.Clear();
-		
+		}
+		}
 	}
 
 	void AddToLayer(std::vector<layer*>*Buffer) {
