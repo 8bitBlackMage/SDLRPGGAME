@@ -1,5 +1,4 @@
 #pragma once
-#include "SDL.h"
 #include "Display.h"
 #include <array>
 

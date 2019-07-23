@@ -26,7 +26,11 @@ public:
 		M_Vbuffer.push_back(new SpriteLayer(M_graphics));
 		M_Vbuffer.push_back(new collisionLayer(M_graphics));
 	}
-
+	~GameEvents()
+	{
+		M_Vbuffer.clear();
+		M_maps.clear();
+	}
 
 	//loads new map into the vector of maps, handles the path generation and object processing 
 	void loadNewMap(std::string MapName)
@@ -49,6 +53,7 @@ public:
 		}
 		sprites->Sprites.resize(sprites->spritecount);
 		sprites->Spriteimages.resize(sprites->spritecount);
+		sprites->ActualLocations.resize(sprites->spritecount);
 	}
 	M_graphics->mapSizeX = M_maps[0]->mWidth;
 	M_graphics->mapSizeY = M_maps[0]->mHeight;
@@ -68,7 +73,7 @@ public:
 	{
 		if (SpriteLayer * SpriteCanvas = dynamic_cast<SpriteLayer*>(M_Vbuffer.at(2)))
 		{
-			M_MainPlayer->AddToLayer(SpriteCanvas);
+			//M_MainPlayer->AddToLayer(SpriteCanvas);
 			for (int i = 0; i < G_MapObjects.size(); i++)
 			{
 				G_MapObjects[i]->AddToLayer(SpriteCanvas);
@@ -81,11 +86,9 @@ public:
 	}
 	void GameLoop(std::array<bool, SDL_NUM_SCANCODES>*Input)
 	{
-	
+		LoopDraw();
 		if (M_counter == 6) {
-			for (int i = 0; i < M_Vbuffer.size(); i++) {
-				M_Vbuffer.at(i)->update();
-			}
+			M_MainPlayer->passScanCodes(Input);
 			if (collisionLayer * Collision = dynamic_cast<collisionLayer*>(M_Vbuffer.at(3))) {
 
 				if (SpriteLayer * Sprites = dynamic_cast<SpriteLayer*>(M_Vbuffer.at(2))) {
@@ -94,16 +97,24 @@ public:
 				M_CollisionData = Collision->pushCollisionData();
 
 			}
-
-			M_MainPlayer->passScanCodes(Input);
 			for (int i = 0; i < G_MapObjects.size(); i++)
 			{
 				G_MapObjects.at(i)->CollsionData = M_CollisionData.at(i);
+				
+			}
+			for (int i = 0; i < M_Vbuffer.size(); i++)
+			{
+				M_Vbuffer.at(i)->update();
+			}
+			for (int i = 0; i < G_MapObjects.size(); i++)
+			{
+
 				G_MapObjects[i]->update();
 			}
+
 			M_counter = 0;
 		}
-		LoopDraw();
+		
 		M_counter++;
 	}
 
@@ -121,5 +132,5 @@ private:
 	std::vector<CollisionBool>M_CollisionData;
 	Player* M_MainPlayer;
 	int M_Objects;
-	__int8 M_counter = 0; 
+	int8_t M_counter = 0; 
 };

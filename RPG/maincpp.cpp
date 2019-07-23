@@ -1,6 +1,6 @@
 #include "Display.h"
 #include "Globals.h"
-//#include "Tilemaps.h"
+#include "Audio.h"
 #include "Events.h"
 #include "Map.h"
 #include "Sprite.h"
@@ -8,7 +8,7 @@
 #include "Player.h"
 int Scale;
 Display Graphics(Globals::Width,Globals::Height,&Scale);
-
+SoundManager Audio;
 EventHandler Loop;
 
 int main(int argc, char* args[]) {
@@ -29,9 +29,9 @@ int main(int argc, char* args[]) {
 		uint32_t endTicks = SDL_GetTicks();
 		uint32_t frametime = endTicks - startTicks;
 
-		if (frametime < 1000 / 60) {
+		if (frametime < 1000 / Globals::FPS) {
 
-			SDL_Delay((1000 / 60) - (frametime));
+			SDL_Delay((1000 / Globals::FPS) - (frametime));
 		}
 	}
 

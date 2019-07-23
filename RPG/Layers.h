@@ -1,5 +1,14 @@
 #pragma once
+
+#ifdef _WIN32
+
 #include "SDL.h"
+#endif //_Win32
+#ifdef __linux__
+#include <SDL2/SDL.h>
+#endif // 
+
+
 
 #include "Globals.h"
 #include "Tileset.h"
@@ -15,7 +24,7 @@ public:
 	virtual void draw() = 0;
 	virtual void update() = 0;
 	Display * M_graphics;
-	__int8 M_layertype;
+	int8_t M_layertype;
 	int M_layer;
 };
 
@@ -65,7 +74,7 @@ public:
 	}
 
 	std::vector<std::vector<SDL_Rect>>M_Tiles;
-	std::vector<std::vector<__int8>>M_GIDs;
+	std::vector<std::vector<int8_t>>M_GIDs;
 	std::vector<Tileset*>M_Tilesets;
 };
 
@@ -79,8 +88,16 @@ public:
 	}
 	void draw() override {
 		for (int i = 0; i < spritecount; i++) {
+			SDL_Rect DEST = Sprites[i];
+			if (i == 0) {
+			
+					DEST.x -= M_graphics->G_ScrollX * Globals::TScale;
+					DEST.y -= M_graphics->G_ScrollY* Globals::TScale;
+				
+			}
+
 			if (Spriteimages[i] != nullptr) {
-				SDL_RenderCopy(M_graphics->getRender(), Spriteimages[i]->M_Texture, &Spriteimages[i]->M_sheetparts[Spriteimages[i]->M_currentSheetPart], &Sprites[i]);
+				SDL_RenderCopy(M_graphics->getRender(), Spriteimages[i]->M_Texture, &Spriteimages[i]->M_sheetparts[Spriteimages[i]->M_currentSheetPart], &DEST);
 			}
 		}
 	}
@@ -90,10 +107,10 @@ public:
 
 	
 	std::vector<SDL_Rect>Sprites;
+	std::vector<SDL_Rect>ActualLocations;
 	std::vector<image*>Spriteimages;
 	int spritecount;
 };
-
 
 class collisionLayer: public  layer{
 public:
@@ -103,17 +120,18 @@ public:
 	}
 
 	void draw() override {
-		for (int i = 0; i < M_CollisionTiles.size(); i++) 
-		{
-			SDL_Rect TMPRECT = M_CollisionTiles.at(i);
-			TMPRECT.x -= M_graphics->G_ScrollX * Globals::TScale;
-			TMPRECT.y -= M_graphics->G_ScrollY * Globals::TScale;
-			SDL_SetRenderDrawColor(M_graphics->getRender(), 255, 0, 0, 5);
-			SDL_RenderFillRect(M_graphics->getRender(), &TMPRECT);
-			SDL_RenderDrawRect(M_graphics->getRender(), &TMPRECT);
+		if (Globals::testMode == true) {
+			for (int i = 0; i < M_CollisionTiles.size(); i++)
+			{
+				SDL_Rect TMPRECT = M_CollisionTiles.at(i);
+				TMPRECT.x -= M_graphics->G_ScrollX * Globals::TScale;
+				TMPRECT.y -= M_graphics->G_ScrollY * Globals::TScale;
+				SDL_SetRenderDrawColor(M_graphics->getRender(), 255, 0, 0, 5);
+				SDL_RenderFillRect(M_graphics->getRender(), &TMPRECT);
+				SDL_RenderDrawRect(M_graphics->getRender(), &TMPRECT);
+			}
 		}
 	}
-
 	void generateTileCollisionMap(TileLayer * Layer)
 	{
 		for (int x = 0; x < Layer->M_GIDs.size(); x++) {
@@ -128,7 +146,7 @@ public:
 
 	void generateSpriteCollisionMap(SpriteLayer * Layer)
 	{
-		M_CollisionSprites = Layer->Sprites;
+		M_CollisionSprites = Layer->ActualLocations;
 		M_CollisionData.resize(M_CollisionSprites.size());
 	}
 
@@ -144,51 +162,53 @@ public:
 			int rightA = M_CollisionSprites.at(i).x + M_CollisionSprites.at(i).w ;
 			int topA = M_CollisionSprites.at(i).y;
 			int bottomA = M_CollisionSprites.at(i).y + M_CollisionSprites.at(i).h;
+
 			for (int n = 0; n < M_CollisionTiles.size(); n++)
 			{
+			//	std::cout << n << std::endl;
 				int leftB = M_CollisionTiles.at(n).x;
 				int rightB = M_CollisionTiles.at(n).x + M_CollisionTiles.at(n).w;
 				int topB = M_CollisionTiles.at(n).y;
 				int bottomB = M_CollisionTiles.at(n).y + M_CollisionTiles.at(n).h;
-	if(!M_CollisionData.at(i).bottom){
-		if (bottomA == topB) {
-			M_CollisionData.at(i).bottom = true;
-		}
-		else
-		{
-			M_CollisionData.at(i).bottom = false;
-		}
-			}
-	if (!M_CollisionData.at(i).top) {
-		if (topA == bottomB) {
-			M_CollisionData.at(i).top = true;
-		}
-		else
-		{
-			M_CollisionData.at(i).top = false;
-		}
-	}
-	if (!M_CollisionData.at(i).right) {
-		if (rightA == leftB) {
-			M_CollisionData.at(i).right = true;
-		}
-		else
-		{
-			M_CollisionData.at(i).right = false;
-		}
-	}
-	if(!M_CollisionData.at(i).left)
-	{
-		if (leftA == rightB) {
-			M_CollisionData.at(i).left = true;
-		}
-		else
-		{
-			M_CollisionData.at(i).left = false;
-		}
-			}
-	}
+			
+				if (M_CollisionTiles.at(n).x == M_CollisionSprites.at(i).x) {
+					if (topA == bottomB) {
+						M_CollisionData.at(i).top = true;
+					}
+					if (bottomA == topB) {
+						M_CollisionData.at(i).bottom = true;
+					}
+				}
+				if (M_CollisionTiles.at(n).y == M_CollisionSprites.at(i).y) {
+				
+					if (leftA == rightB) {
+						M_CollisionData.at(i).left = true;
+					}
+					if (rightA == leftB) {
+						M_CollisionData.at(i).right = true;
+					}
+				}
+				if (M_CollisionTiles.at(n).x == M_CollisionSprites.at(i).x) {
 
+					if (leftA == rightB) {
+						M_CollisionData.at(i).left = true;
+					}
+					if (rightA == leftB) {
+						M_CollisionData.at(i).right = true;
+					}
+				}
+				if (M_CollisionTiles.at(n).y == M_CollisionSprites.at(i).y) {
+					if (topA == bottomB) {
+						M_CollisionData.at(i).top = true;
+					}
+					if (bottomA == topB) {
+						M_CollisionData.at(i).bottom = true;
+					}
+				}
+
+
+
+			}	
 
 		}
 	}
@@ -199,4 +219,15 @@ public:
 	std::vector<CollisionBool> M_CollisionData;
 	std::vector<SDL_Rect>M_CollisionTiles;
 	std::vector<SDL_Rect>M_CollisionSprites;
+};
+
+
+class UiLayer : public layer {
+//layer that draws UI elements, such as pause menus, text boxes, and battle infomation
+	void draw() override{}
+	void update() override{}
+
+
+
+
 };

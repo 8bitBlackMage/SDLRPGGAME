@@ -1,7 +1,14 @@
 #pragma once
 #include "Globals.h"
+#ifdef _WIN32
 #include "SDL.h"
 #include "SDL_image.h"
+#endif
+#ifdef __linux__
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#endif // __linux__
+
 #include <iostream>
 #include <vector>
 
@@ -19,15 +26,13 @@ struct SpriteSheets
 
 		//loads bitmap file from 
 		tmp = IMG_Load(imgPath.c_str());
-//		Map.AutoLoad(tmp);
+
 		M_Texture = SDL_CreateTextureFromSurface(Ren, tmp);
 		SDL_FreeSurface(tmp);
 
 	}
 	SpriteSheets() {}
 	SDL_Texture* M_Texture;
-//	TileMap Map;
-
 };
 
 //overall class to store  display code, holds all base code to rendering to the screen 
@@ -98,13 +103,8 @@ public:
 		SDL_RenderPresent(M_Ren);
 	}
 	
-	//draws movable texture (depricated, do not use)
-	void drawMobTexture(int GID, SpriteSheets sheet, int x, int y)
-	{
-		SDL_Rect DestRect = {x,y,Globals::TScale,Globals::TScale };
 
-	//	SDL_RenderCopy(mRen, sheet.Texture, &sheet.Map.getTile(GID),&DestRect);
-	}
+
 
 
 	//returns the renderer for use in other drawing functions
@@ -127,6 +127,11 @@ public:
 	int M_ScreenHeight, M_ScreenWidth;
 	// locally stored map size in pixels 
 	int mapSizeX, mapSizeY;
+	//bools if map scrolled at all
+
+
+
+	bool M_scroll;
 private:
 	//window for rendering 
 	SDL_Window * M_Win;
@@ -149,7 +154,7 @@ struct image {
 
 
 	//small int to store current rect being used for rendering 
-	__int8 M_currentSheetPart;
+	int8_t M_currentSheetPart;
 
 
 	//function to load png file into VRAM 
@@ -158,6 +163,8 @@ struct image {
 		M_Texture = graphics->LoadMedia(imgPath);
 	}
 
+
+	//generates individual frames from sprite sheet for animation / multi tiles etc 
 	void HandleImageset()
 	{
 		int sizeW;

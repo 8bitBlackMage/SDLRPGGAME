@@ -3,8 +3,7 @@
 #include "Tileset.h"
 #include "Layers.h"
 #include "GameObject.h"
-#include "DIsplay.h"
-#include "SDL.h"
+#include "Display.h"
 #include <sstream>
 using namespace tinyxml2;
 class Map {
@@ -15,56 +14,7 @@ public:
 		Load(Mappath);
 	}
 
-	//std::array<bool,4> getcollision(int x, int y)
-	//{
-	//	int tileX = x / Globals::TScale;
-	//	int tileY = y/  Globals::TScale;
-	//	bool Left = false;
-	//	bool Right = false;
-	//	bool Up = false;
-	//	bool Down = false;
-	//	std::array<bool,4>Collision;
-	//		//left 
-	//	if (x <= 0) {
-	//		Left = true;
-	//	}
-	//	if (Left == false) {
-	//		Left = Layers[0].passable[tileX -1][tileY];
-	//	}
-	//	if (Left == false) {
-	//		Left = Layers[1].passable[tileX - 1][tileY];
-	//		}
-	//	Collision[0] = Left;
-	//		//right
-	//	if (Right == false) {
-	//		Right = Layers[0].passable[tileX + 1][tileY];
-	//	}
-	//	if (Right == false) {
-	//		Right = Layers[1].passable[tileX + 1][tileY];
-	//	}
-	//	Collision[1] = Right;
-	//		//up
-	//	if (y <= 0) {
-	//		Up = true;
-	//	}
-	//	if (Up == false) {
-	//		Up = Layers[0].passable[tileX][tileY - 1];
-	//	}
-	//	if (Up == false) {
-	//		Up = Layers[1].passable[tileX][tileY - 1];
-	//	}
-	//	Collision[2] = Up;
-	//		//down
-	//	if (Down == false) {
-	//		Down = Layers[0].passable[tileX][tileY +1];
-	//	}
-	//	if (Down == false) {
-	//		Down = Layers[1].passable[tileX][tileY + 1];
-	//	}
-	//	Collision[3] = Down;
-
-	//		return Collision;
-	//}
+	
 
 
 
@@ -106,9 +56,6 @@ public:
 		for (int i = 0; i < Layers.size(); i++) {
 			Layers.at(i).getTilesets(Tilesets);
 		}
-
-
-		//generateCollisionmap();
 		XMLElement* ObjectGroupNode = MapNode->FirstChildElement("objectgroup");
 		if (ObjectGroupNode != NULL) {
 			printf("objects present \n");
@@ -128,6 +75,8 @@ public:
 				prepareNPCObject(Object);
 			}
 			}
+		Doc.Clear();
+		
 	}
 
 	void AddToLayer(std::vector<layer*>*Buffer) {
@@ -151,14 +100,14 @@ private:
 	
 	std::vector<bool>tileCollision;
 	
-	std::vector<std::vector<__int8>> CSV(const char * CSVData, int w, int h) {
-		std::vector<std::vector<__int8>> ret;
+	std::vector<std::vector<int8_t>> CSV(const char * CSVData, int w, int h) {
+		std::vector<std::vector<int8_t>> ret;
 		std::istringstream tmp(CSVData);
 		std::string line;
 		int i;
 		int x(0);
 		int y(0);
-		std::vector<__int8> vec;		
+		std::vector<int8_t> vec;		
 		while (!tmp.eof()){
 			
 			while (getline(tmp, line)) {
