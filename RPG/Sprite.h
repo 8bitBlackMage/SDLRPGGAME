@@ -22,7 +22,7 @@ public:
 	Sprite(Display &Graphics) :mGraphics(&Graphics) {
 		x = 0;
 		y = 0;
-		
+		AnimationLoc = new SDL_Rect{ x,y ,Globals::TScale,Globals::TScale };
 		location = new SDL_Rect{ x,y ,Globals::TScale,Globals::TScale };
 		
 		mGid = 1;

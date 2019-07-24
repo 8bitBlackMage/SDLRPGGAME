@@ -1,6 +1,6 @@
 #pragma once
 #include "Display.h"
-
+#include <iostream>
 #include <vector>
 #include "TinyXML/tinyxml2.h"
 
@@ -26,7 +26,6 @@ void Imgload(std::string imgpath) {
 void loadTileset(std::string TSXFILEPATH) {
 	
 	std::string fullpath = "Maps/" + TSXFILEPATH;
-	std::cout << fullpath << std::endl;
 	XMLDocument tileDoc;
 
 	tileDoc.LoadFile(fullpath.c_str());
@@ -104,8 +103,8 @@ SDL_Texture * getImage() {
 }
 SDL_Rect getSrcRect(int GlobalID) {
 	if (GlobalID == 0) {
-		SDL_Rect* tile = new SDL_Rect{};
-		return *tile;
+		SDL_Rect tile{};
+		return tile;
 	}
 	return mTiles.at(GlobalID - mGlobalOffset);
 }

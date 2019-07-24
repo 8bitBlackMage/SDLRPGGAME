@@ -128,7 +128,7 @@ public:
 				SDL_Rect TMPRECT = M_CollisionTiles.at(i);
 				TMPRECT.x -= M_graphics->G_ScrollX * Globals::TScale;
 				TMPRECT.y -= M_graphics->G_ScrollY * Globals::TScale;
-				SDL_SetRenderDrawColor(M_graphics->getRender(), 255, 0, 0, 5);
+				SDL_SetRenderDrawColor(M_graphics->getRender(), 255, 255, 255, 25);
 				SDL_RenderFillRect(M_graphics->getRender(), &TMPRECT);
 				SDL_RenderDrawRect(M_graphics->getRender(), &TMPRECT);
 			}

@@ -46,6 +46,7 @@ public:
 		
 		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 			std::cout << "error" << std::endl;
+			abort();
 		}
 		else {
 			M_Win = SDL_CreateWindow("test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, M_ScreenWidth, M_ScreenHeight, SDL_WINDOW_SHOWN);
@@ -53,7 +54,7 @@ public:
 			if (M_Win == NULL) {
 
 				std::cout << "error" << std::endl;
-
+				abort();
 			}
 			G_BScrollX = M_ScreenWidth * 0.25;
 			G_BScrollY = M_ScreenHeight * 0.25;
@@ -62,6 +63,9 @@ public:
 			G_FScrollX = M_ScreenWidth - G_BScrollX;
 			G_FScrollY = M_ScreenHeight - G_BScrollY;
  			M_Ren = SDL_CreateRenderer(M_Win, -1, SDL_RENDERER_ACCELERATED);
+			if (SDL_SetRenderDrawBlendMode(M_Ren, SDL_BLENDMODE_BLEND) < 0) {
+				abort();
+			}
 			int imgFlags = IMG_INIT_PNG;
 			if (!(IMG_Init(imgFlags) & imgFlags))
 			{

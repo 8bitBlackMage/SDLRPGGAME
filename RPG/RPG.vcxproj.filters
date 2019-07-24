@@ -27,6 +27,9 @@
     <ClCompile Include="Tileset.h">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="Text.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Events.h">

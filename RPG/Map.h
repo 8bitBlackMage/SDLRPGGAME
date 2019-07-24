@@ -14,7 +14,16 @@ public:
 		Load(Mappath);
 	}
 
-	
+	~Map() {
+		for (int i = 0; i < G_MapObjects.size(); i++) {
+			delete G_MapObjects.at(i);
+		}
+		for (int i = 0; i < Tilesets.size(); i++) {
+			delete Tilesets.at(i);
+		}
+		G_MapObjects.clear();
+		Tilesets.clear();
+	}
 
 
 
