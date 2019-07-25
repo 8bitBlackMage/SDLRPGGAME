@@ -7,8 +7,21 @@
 #include <SDL2/SDL_ttf.h>
 #endif
 #include <string>
+
+
+typedef struct{
+
+
+	SDL_Texture * TextToRender;
+	SDL_Rect RenderLocation;
+}OnscreenTextObject;
+
+
+
+
 class TextHandler {
 //this class handles all the text drawing and font management
+public:
 	TextHandler() {
 		if (TTF_Init() < 0) {
 			abort();
@@ -23,15 +36,17 @@ class TextHandler {
 		GameFont = TTF_OpenFont(pathtoFont.c_str(), 20);
 	}
 	
-	SDL_Texture * drawText(std::string TexttoDraw){
+	OnscreenTextObject  drawText(std::string TexttoDraw){
 		SDL_Surface * TextSurface = TTF_RenderText_Solid(GameFont,TexttoDraw.c_str(), MainTextColour);
 		if(TextSurface != NULL){
-			SDL_Texture * TextTexture = SDL_CreateTextureFromSurface(M_Graphics->getRender(),TextSurface);
-
+			OnscreenTextObject TMPTEXT;
+			TMPTEXT.TextToRender = SDL_CreateTextureFromSurface(M_Graphics->getRender(),TextSurface);
+			TMPTEXT.RenderLocation.h = TextSurface->h;
+			TMPTEXT.RenderLocation.w = TextSurface->w;
 			SDL_FreeSurface(TextSurface);
-			return TextTexture;
+		 	return TMPTEXT;
 		}
-		return NULL;
+		
 	}
 
 

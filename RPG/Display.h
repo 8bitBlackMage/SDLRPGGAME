@@ -146,7 +146,7 @@ private:
 };
 
 //coverall class for image files and data for said images 
-struct image {
+typedef struct  {
 
 	
 	//pointer to VRAM holding image data 
@@ -186,4 +186,4 @@ struct image {
 		}
 
 	}
-};
+}image;

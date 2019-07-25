@@ -9,6 +9,7 @@
 #include "Text.h"
 int Scale;
 Display Graphics(Globals::Width,Globals::Height,&Scale);
+TextHandler Text("Pokemon GB.ttf");
 SoundManager Audio;
 EventHandler Loop;
 
