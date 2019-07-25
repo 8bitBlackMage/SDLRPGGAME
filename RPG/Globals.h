@@ -8,7 +8,7 @@ namespace Globals {
 	const float FPS = 60;
 	const int tilesX = 10;
 	const int tilesY = 8;
-	const bool testMode = true;
+	const bool testMode = false;
 
 }
 
