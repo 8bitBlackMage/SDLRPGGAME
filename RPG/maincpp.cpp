@@ -2,14 +2,13 @@
 #include "Globals.h"
 #include "Audio.h"
 #include "Events.h"
-#include "Map.h"
-#include "Sprite.h"
 #include "Gamehandler.h"
 #include "Player.h"
 #include "Text.h"
+
 int Scale;
 Display Graphics(Globals::Width,Globals::Height,&Scale);
-TextHandler Text("Pokemon GB.ttf");
+TextHandler Text("Pokemon GB.ttf", &Graphics);
 SoundManager Audio;
 EventHandler Loop;
 

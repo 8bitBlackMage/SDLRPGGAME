@@ -37,7 +37,8 @@ public:
 		if(ret != 0){
 			
 			std::cout << "error " << Doc.ErrorStr() <<std::endl;
-			abort();
+			
+			return;
 		}
 		if(ret == 0 ){
 		std::cout << ret << std::endl;

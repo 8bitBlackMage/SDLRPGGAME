@@ -34,7 +34,12 @@ struct SpriteSheets
 	SpriteSheets() {}
 	SDL_Texture* M_Texture;
 };
+typedef struct {
 
+
+	SDL_Texture * TextToRender;
+	SDL_Rect RenderLocation;
+}OnscreenTextObject;
 //overall class to store  display code, holds all base code to rendering to the screen 
 class Display
 {
@@ -85,8 +90,7 @@ public:
 		SDL_Quit();
 	}
 	//standard optimised image loader routine, use this for all media loading 
-	SDL_Texture * LoadMedia(std::string path)
-	{
+	SDL_Texture * LoadMedia(std::string path){
 		SDL_Surface * tmp;
 		SDL_Texture * ret;
 		//loads bitmap file from 

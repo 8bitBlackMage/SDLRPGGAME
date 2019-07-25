@@ -10,7 +10,6 @@ namespace Globals {
 	const int tilesY = 8;
 	const bool testMode = true;
 
-
 }
 
 struct CollisionBool {

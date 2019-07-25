@@ -6,7 +6,7 @@
 #include "Player.h"
 #include "Layers.h"
 #include "Tileset.h"
-
+#include "Text.h"
 
 //master game object, holds the global Loop and draw functions along with lists of maps, objects and layers
 class GameEvents
@@ -15,7 +15,7 @@ class GameEvents
 	//to reduce impact on the CPU and to keep gameplay at a reasonable speed 
 public:
 	//constructor filled with test code atm
-	GameEvents(Player * mainPlayer, Display *Graphics)
+	GameEvents(Player * mainPlayer, Display *Graphics):M_Text("Pokemon GB.ttf", Graphics)
 	{
 		M_MainPlayer = mainPlayer;
 		M_MainPlayer->x = 256;
@@ -73,18 +73,22 @@ public:
 	//master Draw function will hold layer drawing code in future versions 
 	void LoopDraw()
 	{
+		std::string playerpos = std::to_string(M_MainPlayer->x);
+		playerpos += " ";
+		playerpos += std::to_string(M_MainPlayer->y);
+			OnscreenTextObject PlayerCoords = M_Text.GenerateText(playerpos,10,10);
 		if (SpriteLayer * SpriteCanvas = dynamic_cast<SpriteLayer*>(M_Vbuffer.at(2)))
 		{
-			//M_MainPlayer->AddToLayer(SpriteCanvas);
 			for (int i = 0; i < G_MapObjects.size(); i++)
 			{
 				G_MapObjects[i]->AddToLayer(SpriteCanvas);
-
+				
 			}
 		}
 		for (int i = 0; i < M_Vbuffer.size(); i++) {
 			M_Vbuffer[i]->draw();
 		}
+		M_Text.RenderText(PlayerCoords);
 	}
 	void GameLoop(std::array<bool, SDL_NUM_SCANCODES>*Input)
 	{
@@ -122,13 +126,11 @@ public:
 
 
 
-
-
 	std::vector<GameObject*>G_MapObjects;
 
 private:
 	std::vector<layer*>M_Vbuffer;
-
+	TextHandler M_Text;
 	Display * M_graphics;
 	std::vector<Map*>M_maps;
 	std::vector<CollisionBool>M_CollisionData;
