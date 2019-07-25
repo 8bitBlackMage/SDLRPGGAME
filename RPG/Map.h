@@ -163,14 +163,14 @@ private:
 		{
 			const char * name;
 			ObjectProperties->QueryStringAttribute("name", &name);
-			std::string workName = name;
-			if (name == "DestY") {
+
+			if(strncmp(name, "DestY", 5)== 0){
 				ObjectProperties->QueryIntAttribute("value", &enterance.destY);
 			}
-			if (name == "DestX") {
+			if (strncmp(name, "DestX", 5)== 0) {
 				ObjectProperties->QueryIntAttribute("value", &enterance.destX);
 			}
-			if (name == "mapName") {
+			if(strncmp(name, "mapName", 7)== 0) {
 				const char * mapName;
 				ObjectProperties->QueryStringAttribute("value", &mapName);
 				enterance.mapname = mapName;
@@ -193,14 +193,16 @@ private:
 			const char * name;
 			ObjectProperties->QueryStringAttribute("name", &name);
 			std::string workName = name;
-			if (name == "Name") {
+			if (strncmp(name, "Name", 4)== 0) {
 				const char * Name;
 				ObjectProperties->QueryStringAttribute("value", &Name);
 			}
-			if (name == "hasItem") {
-				ObjectProperties->QueryBoolAttribute("value", &Character.hasItem);
+			
+			if (strncmp(name, "hasItem", 7)== 0) {
+			ObjectProperties->QueryBoolAttribute("value", &Character.hasItem);
 			}
-			if (name == "spriteName") {
+	
+			if (strncmp(name, "spriteName", 10)== 0) {
 				const char * mapName;
 				ObjectProperties->QueryStringAttribute("value", &mapName);
 				Character.ImgPath = mapName;

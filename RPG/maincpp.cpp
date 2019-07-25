@@ -6,6 +6,7 @@
 #include "Sprite.h"
 #include "Gamehandler.h"
 #include "Player.h"
+#include "Text.h"
 int Scale;
 Display Graphics(Globals::Width,Globals::Height,&Scale);
 SoundManager Audio;

@@ -92,6 +92,9 @@ public:
 		case(down): {
 			mGid = 1;
 			break;
+		case(idle):{
+			
+		}
 		}
 		}
 
