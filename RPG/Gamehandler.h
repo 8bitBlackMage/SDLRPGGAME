@@ -35,8 +35,7 @@ public:
 	}
 
 	//loads new map into the vector of maps, handles the path generation and object processing 
-	void loadNewMap(std::string MapName)
-	{
+	void loadNewMap(std::string MapName){
 	std::string path = "Maps/" + MapName + ".tmx";
 	std::cout << path << std::endl;
 	M_maps.push_back(new Map(path,M_graphics));
@@ -95,6 +94,7 @@ public:
 		LoopDraw();
 		if (M_counter == 6) {
 			M_MainPlayer->passScanCodes(Input);
+			UICatcher(Input);
 			if (collisionLayer * Collision = dynamic_cast<collisionLayer*>(M_Vbuffer.at(3))) {
 
 				if (SpriteLayer * Sprites = dynamic_cast<SpriteLayer*>(M_Vbuffer.at(2))) {
@@ -124,11 +124,34 @@ public:
 		M_counter++;
 	}
 
+	void UICatcher(std::array<bool, SDL_NUM_SCANCODES>*Input){
+		
+		OnscreenTextObject UI = M_Text.GenerateText("UI is open", 500, 500);
+		if(Input->at(SDL_SCANCODE_ESCAPE) == true || KeepUI == true){
+			std::cout << "UI open" << std::endl;
+			KeepUI = true;
+			while(KeepUI == true){
+				M_Text.RenderText(UI);
+				if(Input->at(SDL_SCANCODE_ESCAPE) == true){
+					KeepUI = false;
+				}
+				break;
+				
+			}
+		}
+	}
+	void ErrorCatcher(){
+		
+		if(G_hasError == true){
 
 
+		}
+	}
 	std::vector<GameObject*>G_MapObjects;
 
 private:
+	bool KeepUI = false;
+	bool G_hasError;
 	std::vector<layer*>M_Vbuffer;
 	TextHandler M_Text;
 	Display * M_graphics;
